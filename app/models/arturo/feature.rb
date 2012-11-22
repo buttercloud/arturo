@@ -10,6 +10,8 @@ module Arturo
     Arturo::Feature::SYMBOL_REGEX = /^[a-zA-z][a-zA-Z0-9_]*$/
     DEFAULT_ATTRIBUTES = { :deployment_percentage => 0 }.with_indifferent_access
 
+    money :price, :precision => 5, :round => 2
+
     attr_readonly :symbol
 
     validates_presence_of :symbol, :deployment_percentage
@@ -25,7 +27,7 @@ module Arturo
     # @return [Arturo::Feature, nil] the Feature if found, else nil
     def self.to_feature(feature_or_symbol)
       return feature_or_symbol if feature_or_symbol.kind_of?(self)
-      self.where(:symbol => feature_or_symbol.to_sym).first
+      self.where(:symbol => feature_or_symbol.to_s).first
     end
 
     # Create a new Feature
