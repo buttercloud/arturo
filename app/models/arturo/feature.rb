@@ -54,7 +54,7 @@ module Arturo
     end
 
     def to_s
-      "Feature #{name}"
+      "#{name}"
     end
 
     def to_param
