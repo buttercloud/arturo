@@ -10,7 +10,7 @@ module Arturo
     Arturo::Feature::SYMBOL_REGEX = /^[a-zA-z][a-zA-Z0-9_]*$/
     DEFAULT_ATTRIBUTES = { :deployment_percentage => 0 }.with_indifferent_access
 
-    money :price, :precision => 5, :round => 2
+    money :price, :round => 2
 
     attr_readonly :symbol
 
