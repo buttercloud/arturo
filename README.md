@@ -66,19 +66,18 @@ feature and deploy it to all users.
 
 ## Installation
 
-### In Rails 3, with Bundler
+### In Rails 3 or 4, with Bundler
 
     gem 'arturo', '~> 1.0'
 
-### In Rails 3, without Bundler
+### In Rails 3 or 4, without Bundler
 
     $ gem install arturo --version="~> 1.0"
 
 ### In Rails 2.3
 
-For Rails 2.3 support, see the
-[`rails_2_3` branch](http://github.com/jamesarosen/arturo/tree/rails_2_3)
-of Arturo.
+Rails 2.3 is no longer supported and has been archived on the
+[`rails_2_3` branch](http://github.com/jamesarosen/arturo/tree/rails_2_3).
 
 ## Configuration
 
@@ -195,6 +194,13 @@ If, on the other hand, no users on the free plan should have the
       user.account.free?
     end
 
+If you want to whitelist or blacklist large groups of features at once, you
+can move the feature argument into the block:
+
+    Arturo::Feature.whitelist do |feature, user|
+      user.account.has?(feature.to_sym)
+    end
+
 ### Feature Conditionals
 
 All that configuration is just a waste of time if Arturo didn't modify the
@@ -213,7 +219,7 @@ does not have the `:hold_book` feature.
     end
 
 `require_feature` accepts as a second argument a `Hash` that it passes on
-to `before_filter`, so you can use `:only` and `:except` to specify exactly
+to `before_action`, so you can use `:only` and `:except` to specify exactly
 which actions are filtered.
 
 If you want to customize the page that is rendered on 403 Forbidden
@@ -260,11 +266,27 @@ Both check whether the `foo` feature exists and is enabled for `recipient`.
 
 #### Caching
 
-**Note**: Arturo does not yet have caching support. Be very careful when
+**Note**: Arturo has support for caching `Feature` lookups, but doesn't yet
+integrate with Rails's caching. This means you should be very careful when
 caching actions or pages that involve feature detection as you will get
 strange behavior when a user who has access to a feature requests a page
-just after one who does not (and vice versa). The following is the
-**intended** support for caching.
+just after one who does not (and vice versa).
+
+To enable caching `Feature` lookups, mix `Arturo::FeatureCaching` into
+`Arturo::Feature` and set the `cache_ttl`. This is best done in an
+initializer:
+
+    Arturo::Feature.extend(Arturo::FeatureCaching)
+    Arturo::Feature.cache_ttl = 10.minutes
+
+You can also warm the cache on startup:
+
+    Arturo::Feature.warm_cache!
+
+This will pre-fetch all `Feature`s and put them in the cache.
+
+
+The following is the **intended** support for integration with view caching:
 
 Both the `require_feature` before filter and the `if_feature_enabled` block
 evaluation automatically append a string based on the feature's
@@ -278,18 +300,8 @@ Arturo gets its name from
 [Professor Maximillian Arturo](http://en.wikipedia.org/wiki/Maximillian_Arturo)
 on [Sliders](http://en.wikipedia.org/wiki/Sliders).
 
-## Contributing ##
+## Quality Metrics
 
-For bug reports, open an [issue](https://github.com/jamesarosen/Timecop.js/issues)
-on GitHub.
+[![Build Status](https://travis-ci.org/zendesk/arturo.png?branch=master)](https://travis-ci.org/zendesk/arturo)
 
-Timecop.js has a ‘commit-bit’ policy, much like the Rubinius project
-and Gemcutter. Submit a patch that is accepted, and you can get full
-commit access to the project. All you have to do is open an issue
-asking for access and I'll add you as a collaborator.
-Feel free to fork the project though and have fun in your own sandbox.
-
-## Authors ##
-
-* [https://github.com/jamesarosen](James A. Rosen)
-* [https://github.com/plukevdh](Luke van der Hoeven)
+[![Code Quality](https://codeclimate.com/github/zendesk/arturo.png)](https://codeclimate.com/github/zendesk/arturo)

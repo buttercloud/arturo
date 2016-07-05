@@ -1,4 +1,9 @@
 /.rvmrc
 /.bundle
 /arturo*.gem
+/gemfiles/*.gemfile.lock
+/Gemfile.lock
 tags
+**/*.sqlite3
+**/*.log
+**/tmp/**/*

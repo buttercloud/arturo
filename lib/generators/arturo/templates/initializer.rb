@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 require 'arturo'
+require 'arturo/feature'
 
 # Configure who may manage features here.
 # The following is the default implementation.
